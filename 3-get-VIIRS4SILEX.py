@@ -1,8 +1,13 @@
 import pandas as pd
 import os 
 import matplotlib.pyplot as plt 
-from datetime import datetime
 import sys
+from pathlib import Path
+import importlib 
+from datetime import datetime, timezone
+
+#home brewed
+import hstools
 
 def get_transaction_count(url) :
   count = 0
@@ -17,18 +22,22 @@ def get_transaction_count(url) :
 if __name__ == '__main__':
 #############################
 
-
+    importlib.reload(hstools)
+    
+    script_dir = Path(__file__).resolve().parent
+    params = hstools.load_config(str(script_dir)+'/config.yaml')
+    satname = sys.argv[1] # need to be either 'VIIRS_NOAA20_NRT'  'VIIRS_NOAA21_NRT'  or  'VIIRS_SNPP_NRT'
+    
 # Let's set your map key that was emailed to you. It should look something like 'abcdef1234567890abcdef1234567890'
     MAP_KEY = os.getenv("MAP_KEY_FIRMS")
 
-    SILEX_Domain='-10,35,20,46'
-    Sensor = sys.argv[1] # need to be either 'VIIRS_NOAA20_NRT'  'VIIRS_NOAA21_NRT'  or  'VIIRS_SNPP_NRT'
+    SILEX_Domain= params['general']['domain']
 
-    dirout = '/mnt/data3/SILEX/FRP-HotSpot/{:s}/'.format(Sensor)
+    dirout = '{:s}/{:s}/'.format(params['hs']['dir_data'],satname)
     os.makedirs(dirout, exist_ok=True)
 
 # in this example let's look at VIIRS NOAA-20, entire world and the most recent day
-    area_url = 'https://firms.modaps.eosdis.nasa.gov/api/area/csv/{:s}/{:s}/{:s}/1'.format(MAP_KEY,Sensor,SILEX_Domain)
+    area_url = 'https://firms.modaps.eosdis.nasa.gov/api/area/csv/{:s}/{:s}/{:s}/1'.format(MAP_KEY,satname,SILEX_Domain)
     
     url = 'https://firms.modaps.eosdis.nasa.gov/mapserver/mapkey_status/?MAP_KEY=' + MAP_KEY
     start_count = get_transaction_count(url)
@@ -36,8 +45,20 @@ if __name__ == '__main__':
     end_count = get_transaction_count(url)
     print ('We used %i transactions.' % (end_count-start_count))
 
+    if len(df_area) == 0: 
+        print('no fire detected yet')
+        sys.exit()
 
-    df_area.to_csv('{:s}/{:s}-{:s}.csv'.format(dirout,Sensor.lower(),datetime.now().strftime('%Y-%m-%d-%H%M')), index=False)
+    #remove from df all previous hs of the same day
+    day = df_area['acq_date'].iloc[0]
+    df_aera_prev = hstools.load_hs4oneday(day,satname,params)
 
+    df_complement = pd.concat([df_area, df_aera_prev, df_aera_prev,]).drop_duplicates(keep=False)
+
+    if len(df_complement) == 0: 
+        print('no new fire detected yet')
+        sys.exit()
+    
+    df_complement.to_csv('{:s}/{:s}-{:s}.csv'.format(dirout,satname.lower(),datetime.now(timezone.utc).strftime('%Y-%m-%d-%H%M')), index=False)
 
 
