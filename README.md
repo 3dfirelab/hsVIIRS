@@ -1,11 +1,24 @@
-running `run_viirs4SILEX.sh` creates in `dirout` define in `3-get-VIIRS4SILEX.py` the following tree directory
+running `run_viirs4SILEX.sh` creates in `dir_data` define in `config-SILEX.yaml` the following tree directory
 ```
 ├── FRP-HotSpot
 │   ├── VIIRS_NOAA20_NRT
 │   ├── VIIRS_NOAA21_NRT
 │   └── VIIRS_SNPP_NRT
 ```
-where in each directory you have the hotspot data which are csv file looking like this:
+where in each directory you have the hourly hotspot data for the domain defined in `config-SILEX.yaml`.
+For the SILEX campaign the config file lools like this:
+```
+# config-SILEX.yaml
+general:
+  domain: -10,35,20,52
+  crs: 3035
+hs:
+  dir_data: /mnt/data3/SILEX/VIIRS-HotSpot
+  sats: ['VIIRS_NOAA20_NRT', 'VIIRS_NOAA21_NRT', 'VIIRS_SNPP_NRT']
+event:
+  dir_data: /mnt/data3/SILEX/VIIRS-HotSpot/FireEvents
+```
+The downloaded csv files look like this:
 ```
 latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight
 44.01191,19.88847,301.34,0.39,0.36,2025-03-19,41,N,VIIRS,n,2.0NRT,268.57,0.95,N
@@ -17,8 +30,5 @@ latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,
 44.85782,11.59075,305.17,0.43,0.46,2025-03-19,41,N,VIIRS,n,2.0NRT,274.65,1.09,N
 45.14436,9.94362,336.99,0.52,0.5,2025-03-19,41,N,VIIRS,n,2.0NRT,277.1,5.29,N
 45.14597,9.94478,336.63,0.52,0.5,2025-03-19,41,N,VIIRS,n,2.0NRT,278.92,4.4,N
-
 ```
-
-I have been runnign `run_viirs4SILEX.sh` every hour. If there wasn't any sat obs during this hour, my understanding is that I redownload the same file.
-I need to check this more in details. There is probably a better way to avoid the doublon.
+set `run_viirs4SILEX.sh` in cron to run every hour. If there wasn't any sat obs in the zone area during this hour, then nothing happens.

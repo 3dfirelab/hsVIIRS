@@ -1,0 +1,10 @@
+# config.yaml
+general:
+  domain: -9.5,40,-6.5,41.5
+  crs: 3035
+hs:
+  dir_data: /mnt/data3/SILEX/FRP-HotSpot-aveiro
+  sats: ['VIIRS_NOAA20_NRT', 'VIIRS_NOAA21_NRT', 'VIIRS_SNPP_NRT']
+event:
+  dir_data: /mnt/data3/SILEX/FRP-HotSpot-aveiro/FireEvents
+

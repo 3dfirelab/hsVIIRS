@@ -1,0 +1,10 @@
+# config.yaml
+general:
+  domain: -10,35,20,52
+  crs: 3035
+hs:
+  dir_data: /mnt/data3/SILEX/VIIRS-HotSpot
+  sats: ['VIIRS_NOAA20_NRT', 'VIIRS_NOAA21_NRT', 'VIIRS_SNPP_NRT']
+event:
+  dir_data: /mnt/data3/SILEX/VIIRS-HotSpot/FireEvents
+
