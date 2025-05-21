@@ -1,7 +1,0 @@
-#!/bin/bash
-#
-export MAP_KEY_FIRMS=YOUR-KEY
-source ~/Venv/firms/bin/activate
-python /home/paugam/Src/Hs-FIRMS/3-get-VIIRS4SILEX.py VIIRS_NOAA20_NRT
-python /home/paugam/Src/Hs-FIRMS/3-get-VIIRS4SILEX.py VIIRS_NOAA21_NRT
-python /home/paugam/Src/Hs-FIRMS/3-get-VIIRS4SILEX.py VIIRS_SNPP_NRT

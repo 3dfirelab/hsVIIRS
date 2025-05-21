@@ -64,4 +64,5 @@ if __name__ == '__main__':
     print('save {:d} new hot spot'.format(len(df_complement)))
     df_complement.to_csv('{:s}/{:s}-{:s}.csv'.format(dirout,satname.lower(),datetime.now(timezone.utc).strftime('%Y-%m-%d-%H%M')), index=False)
 
+    sys.exit(19) 
 
